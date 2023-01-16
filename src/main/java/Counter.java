@@ -1,9 +1,9 @@
 public class Counter {
-    private int value;
-    private int value2;
+    private volatile int value;
+    private volatile int value2;
 
-    private Object monitor1 = new Object();
-    private Object monitor2 = new Object();
+    private final Object monitor1 = new Object();
+    private final Object monitor2 = new Object();
 
     public void inc() {
         synchronized (monitor1) {
