@@ -7,10 +7,44 @@ public class Main {
     //private static final int HALF = SIZE / 2;
 
     public static void main(String[] args) {
-        //startTimer();
-        //withConcurrency();
-        //withoutConcurrency();
+        ATM atm = new ATM(1000);
 
+        Thread thread1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                atm.withdraw("Max", 300);
+            }
+        });
+
+        Thread thread2 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    thread1.join();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                atm.withdraw("John", 500);
+            }
+        });
+
+        Thread thread3 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    thread2.join();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                atm.withdraw("Nick", 400);
+            }
+        });
+
+        thread1.start();
+        thread2.start();
+        thread3.start();
+
+        /*
         Counter counter = new Counter();
         long before = System.currentTimeMillis();
         int barrier = 100_000_000;
@@ -63,10 +97,13 @@ public class Main {
         System.out.println(counter.getValue());
         System.out.println(counter.getValue2());
         System.out.println(after - before);
-    }
-
+    */
 
     /*
+    startTimer();
+    withConcurrency();
+    withoutConcurrency();
+
     private static void startTimer() {
         Thread timer = new Thread(new Runnable() {
             @Override
@@ -143,4 +180,5 @@ public class Main {
         System.out.println("TimeWithConcurrency = " + (after - before));
     }
     */
+    }
 }
