@@ -1,12 +1,76 @@
 import javax.xml.transform.TransformerException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Main {
     //private static final int SIZE = 50_000_000;
     //private static final int HALF = SIZE / 2;
 
     public static void main(String[] args) {
+        ExecutorService executorService = Executors.newFixedThreadPool(5);
+        CountDownLatch countDownLatch = new CountDownLatch(10);
+        for (int i = 0; i < 10; i++) {
+            final int index = i;
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println("Start - " + index);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    System.out.println("Finish - " + index);
+                    countDownLatch.countDown();
+                }
+            });
+        }
+        executorService.shutdown();
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("All threads are terminated");
+
+
+
+        /*
+        Counter2 counter2 = new Counter2();
+        int barrier = 1_000_000;
+
+        Thread thread1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for(int i = 0; i < barrier; i++) {
+                    counter2.inc();
+                }
+            }
+        });
+        Thread thread2 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for(int i = 0; i < barrier; i++) {
+                    counter2.dec();
+                }
+            }
+        });
+        thread1.start();
+        thread2.start();
+        try {
+            thread1.join();
+            thread2.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println(counter2.getValue());
+        */
+
+        /*
         ATM atm = new ATM(1000);
 
         Thread thread1 = new Thread(new Runnable() {
@@ -33,6 +97,7 @@ public class Main {
         thread1.start();
         thread2.start();
         thread3.start();
+        */
 
         /*
         Counter counter = new Counter();
