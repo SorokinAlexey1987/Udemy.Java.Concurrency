@@ -2,15 +2,139 @@ import javax.xml.transform.TransformerException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 public class Main {
     //private static final int SIZE = 50_000_000;
     //private static final int HALF = SIZE / 2;
 
     public static void main(String[] args) {
+        BlockingQueue blockingQueue = new BlockingQueue();
+
+
+
+
+        /*
+        ExecutorService executorService = Executors.newFixedThreadPool(3, new ThreadFactory() {
+            @Override
+            public Thread newThread(Runnable r) {
+                Thread thread = new Thread(r);
+                thread.setDaemon(true);
+                return thread;
+            }
+        });
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while (true) {
+                        System.out.print(".");
+                        Thread.sleep(300);
+                    }
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        Future<String> futureName = executorService.submit(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                Thread.sleep(5000);
+                return "John";
+            }
+        });
+
+        Future<Integer> futureAge = executorService.submit(new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                Thread.sleep(4000);
+                return 40;
+            }
+        });
+
+        try {
+            String name = futureName.get();
+            int age = futureAge.get();
+            System.out.println("\nName: " + name + "; Age: " + age);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+        */
+
+
+
+        /*
+        Long a = 111L;
+        Long b = 111L;
+        Long c = 222L;
+        Long d = 222L;
+        System.out.println(a == b);
+        System.out.println(c == d);
+        CountDownLatch countDownLatch = new CountDownLatch(3);
+        ExecutorService executorService = Executors.newFixedThreadPool(3);
+        Runnable task1 = new Runnable() {
+            @Override
+            public void run() {
+                long sum = 0;
+                for (int i = 0; i < 1_000_000; i++) {
+                    if (i % 2 == 0) {
+                        sum += i;
+                    }
+                }
+                System.out.println("Task1: " + sum);
+                countDownLatch.countDown();
+            }
+        };
+        Runnable task2 = new Runnable() {
+            @Override
+            public void run() {
+                long sum = 0;
+                for (int i = 0; i < 1_000_000; i++) {
+                    if (i % 7 == 0) {
+                        sum += i;
+                    }
+                }
+                System.out.println("Task2: " + sum);
+                countDownLatch.countDown();
+            }
+        };
+        Runnable task3 = new Runnable() {
+            @Override
+            public void run() {
+                List<Integer> numbers = new ArrayList<>();
+                for (int i = 0; i < 1000; i++) {
+                    numbers.add((int) (Math.random() * 1000));
+                }
+                int count = 0;
+                for (int number : numbers) {
+                    if (number % 2 == 0) {
+                        count++;
+                    }
+                }
+                System.out.println("Task3: " + count);
+                countDownLatch.countDown();
+            }
+        };
+        long before = System.currentTimeMillis();
+        executorService.execute(task1);
+        executorService.execute(task2);
+        executorService.execute(task3);
+        executorService.shutdown();
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        long after = System.currentTimeMillis();
+        System.out.println("Time: " + (after - before));
+        */
+
+
+
+        /*
         ExecutorService executorService = Executors.newFixedThreadPool(5);
         CountDownLatch countDownLatch = new CountDownLatch(10);
         for (int i = 0; i < 10; i++) {
@@ -36,6 +160,7 @@ public class Main {
             throw new RuntimeException(e);
         }
         System.out.println("All threads are terminated");
+        */
 
 
 
@@ -70,6 +195,8 @@ public class Main {
         System.out.println(counter2.getValue());
         */
 
+
+
         /*
         ATM atm = new ATM(1000);
 
@@ -98,6 +225,8 @@ public class Main {
         thread2.start();
         thread3.start();
         */
+
+
 
         /*
         Counter counter = new Counter();
@@ -153,6 +282,8 @@ public class Main {
         System.out.println(counter.getValue2());
         System.out.println(after - before);
     */
+
+
 
     /*
     startTimer();
@@ -235,5 +366,7 @@ public class Main {
         System.out.println("TimeWithConcurrency = " + (after - before));
     }
     */
+
+
     }
 }
