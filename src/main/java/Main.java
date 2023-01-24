@@ -3,13 +3,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.*;
+import java.util.concurrent.BlockingQueue;
 
 public class Main {
     //private static final int SIZE = 50_000_000;
     //private static final int HALF = SIZE / 2;
 
     public static void main(String[] args) {
-        BlockingQueue blockingQueue = new BlockingQueue();
+        //BlockingQueue blockingQueue = new BlockingQueue();
+        BlockingQueue<Runnable> blockingQueue = new LinkedBlockingQueue<>();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -17,10 +19,13 @@ public class Main {
                 while (true) {
                     System.out.println("Counter: " + i);
                     i++;
-                    Runnable task = blockingQueue.take();
-                    if (task != null) {
-                        new Thread(task).start();
+                    Runnable task = null;
+                    try {
+                        task = blockingQueue.take();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
                     }
+                    new Thread(task).start();
                 }
             }
         }).start();
