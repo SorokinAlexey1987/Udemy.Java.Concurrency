@@ -19,7 +19,8 @@ public class Main {
 
     public static void main(String[] args) {
         //Task_12
-        List<Integer> numbers = Collections.synchronizedList(new ArrayList<>());
+        //List<Integer> numbers = Collections.synchronizedList(new ArrayList<>());
+        List<Integer> numbers = new CopyOnWriteArrayList<>();
         CountDownLatch countDownLatch = new CountDownLatch(2);
         new Thread(new Runnable() {
             @Override
