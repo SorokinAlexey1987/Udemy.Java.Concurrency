@@ -1,5 +1,6 @@
 import javax.xml.transform.TransformerException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.*;
@@ -17,23 +18,62 @@ public class Main {
     */
 
     public static void main(String[] args) {
+        //Task_12
+        List<Integer> numbers = Collections.synchronizedList(new ArrayList<>());
+        CountDownLatch countDownLatch = new CountDownLatch(2);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    for (int i = 0; i < 100; i++) {
+                        Thread.sleep(100);
+                            numbers.add(i);
+                    }
+                    countDownLatch.countDown();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }).start();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    for (int i = 0; i < 100; i++) {
+                        Thread.sleep(100);
+                            numbers.add(i);
+                    }
+                    countDownLatch.countDown();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }).start();
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println(numbers.size());
+
         //Task_11
-
-        Account account = new Account(1000, 1000);
+        /*
+        MFP mfp = new MFP();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                account.transferFrom1To2(300);
+                mfp.scan(5);
             }
         }).start();
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                account.transferFrom2To1(500);
+                mfp.print(4);
             }
         }).start();
-
+        */
 
 
         //Task_10
