@@ -19,7 +19,22 @@ public class Main {
     public static void main(String[] args) {
 
         //Task_10
+        /*
+        Account account = new Account(1000, 1000);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                account.transferFrom1To2(300);
+            }
+        }).start();
 
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                account.transferFrom2To1(500);
+            }
+        }).start();
+        */
 
 
         //Task_9
@@ -400,7 +415,7 @@ public class Main {
     */
 
 
-    //Task_1
+        //Task_1
     /*
     startTimer();
     withConcurrency();
