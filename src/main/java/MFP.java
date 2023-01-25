@@ -5,7 +5,7 @@ public class MFP {
     public void scan(int count) {
         synchronized (scanMonitor) {
             try {
-                for (int i = 0; i < count; i++) {
+                for (int i = 1; i <= count; i++) {
                     Thread.sleep(100);
                     System.out.println("Scanned " + i + " pages.");
                 }
@@ -18,7 +18,7 @@ public class MFP {
     public void print(int count) {
         synchronized (printMonitor) {
             try {
-                for (int i = 0; i < count; i++) {
+                for (int i = 1; i <= count; i++) {
                     Thread.sleep(100);
                     System.out.println("Printed " + i + " pages.");
                 }
