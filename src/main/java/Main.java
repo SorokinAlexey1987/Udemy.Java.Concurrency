@@ -1,13 +1,11 @@
 import javax.xml.transform.TransformerException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.TreeMap;
+import java.sql.SQLOutput;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.BlockingQueue;
 
 public class Main {
-    /*
+
     private static final int SIZE = 50_000_000;
     private static final int HALF = SIZE / 2;
     private static final String A = "A";
@@ -15,7 +13,18 @@ public class Main {
     private static final String C = "C";
     private static final Object MONITOR = new Object();
     private static String nextLetter = A;
-    */
+    private static final int CARS_COUNT_IN_TUNNEL = 3;
+    private static final int CARS_COUNT = 10;
+
+    private static final Semaphore tunnelSemaphore = new Semaphore(CARS_COUNT_IN_TUNNEL);
+    private static final ExecutorService executorService = Executors.newCachedThreadPool();
+    private static final CyclicBarrier cyclicBarrier = new CyclicBarrier(CARS_COUNT);
+    private static final Map<Integer, Long> score = new ConcurrentHashMap<>();
+    private static final CountDownLatch countDownLatch = new CountDownLatch(CARS_COUNT);
+
+    private static int winnerIndex = -1;
+    private static final Object monitor = new Object();
+
     private static void workWithFileSystem() {
         String name = Thread.currentThread().getName();
         System.out.println(name + " started working with file system.");
@@ -27,10 +36,88 @@ public class Main {
         System.out.println(name + " finished working with file system.");
     }
 
+    private static void sleepRandomTime() {
+        long millis = (long) (Math.random() * 5000 + 1000);
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void prepare(int index) {
+        System.out.println(index + " started preparing");
+        sleepRandomTime();
+        System.out.println(index + " finished preparing");
+    }
+
+    private static void roadFirst(int index) {
+        System.out.println(index + " started roadFirst");
+        sleepRandomTime();
+        System.out.println(index + " finished roadFirst");
+    }
+
+    private static void roadSecond(int index) {
+        System.out.println(index + " started roadSecond");
+        sleepRandomTime();
+        System.out.println(index + " finished roadSecond");
+    }
+
+    private static void tunnel(int index) {
+        try {
+            tunnelSemaphore.acquire();
+            System.out.println(index + " started tunnel");
+            sleepRandomTime();
+            System.out.println(index + " finished tunnel");
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            tunnelSemaphore.release();
+        }
+    }
 
     public static void main(String[] args) {
+        //Task_15
+        for (int i = 0; i < CARS_COUNT; i++) {
+            final int index = i;
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    prepare(index);
+                    try {
+                        cyclicBarrier.await();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    } catch (BrokenBarrierException e) {
+                        throw new RuntimeException(e);
+                    }
+                    long before = System.currentTimeMillis();
+                    roadFirst(index);
+                    tunnel(index);
+                    roadSecond(index);
+                    synchronized (monitor) {
+                        if (winnerIndex == -1) {
+                            winnerIndex = index;
+                        }
+                    }
+                    long after = System.currentTimeMillis();
+                    score.put(index, after - before);
+                    countDownLatch.countDown();
+                }
+            });
+        }
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        for(int key: score.keySet()) {
+            System.out.println(key + " " + score.get(key));
+        }
+        System.out.println("Winner: " + winnerIndex + " Time: " + score.get(winnerIndex));
 
         //Task_14
+        /*
         CyclicBarrier cyclicBarrier = new CyclicBarrier(2);
         for (int i = 0; i < 10; i++) {
             new Thread (new Runnable() {
@@ -54,7 +141,7 @@ public class Main {
                 }
             }).start();
         }
-
+        */
 
 
         //Task_13
